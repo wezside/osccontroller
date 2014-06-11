@@ -12,5 +12,5 @@ Requirements
 * LiveOSC
 * Port 9000 open on firewall
 * JSONXX library 
-** add .h files to your compiler CFLAGS - see config.make
-** Remove the jsonxx_test.c file when using Make to compile as this will conflict with OF
+	* add .h files to your compiler CFLAGS - see config.make
+	* Remove the jsonxx_test.c file when using Make to compile as this will conflict with OF
