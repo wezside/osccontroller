@@ -6,10 +6,10 @@
 	},
 	{
 		"group": "Direct Speaker 1",
-		"tracks": [0, 1, 2 ,3 , 4, 5]
+		"tracks": [0, 1, 2 , 3]
 	},
 	{
 		"group": "Direct Speaker 2",
-		"tracks": [0, 1, 2 ,3 , 4, 5]
+		"tracks": [0, 1, 2 , 3]
 	}	
 ]}
