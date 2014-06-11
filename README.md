@@ -14,3 +14,4 @@ Requirements
 * JSONXX library 
 	* add .h files to your compiler CFLAGS - see config.make
 	* Remove the jsonxx_test.cc file when using Make to compile as this will conflict with OF
+* ableton.json is only needed for use with setGroupXX()
