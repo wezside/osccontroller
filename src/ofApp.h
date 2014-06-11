@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 #include "osccontroller.hpp"
+#include "abletongroup.hpp"
+#include "abletontrack.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -22,5 +24,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 
+		std::vector<wezside::AbletonGroup> groups;
 		wezside::OSCController oscremote;
 };

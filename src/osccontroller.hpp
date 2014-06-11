@@ -2,6 +2,7 @@
 #define __OSCCONTROLLER_HPP__
 
 #include <fstream>
+
 #include "ofxOsc.h"
 #include "jsonxx.h"
 
@@ -14,6 +15,7 @@ namespace wezside
 	{
 	private:
 		jsonxx::Object mapping;
+		jsonxx::Array groupArr;
 		ofxOscSender osc_sender;
 
 	public:
@@ -25,7 +27,6 @@ namespace wezside
 		void init()
 		{
 			osc_sender.setup(HOST, PORT);
-
 			ofxOscMessage m;
 			m.setAddress("/live/play");
 			osc_sender.sendMessage(m);
@@ -41,6 +42,7 @@ namespace wezside
 			}
 			infile.close();
 			mapping.parse(content);
+			groupArr = mapping.get<jsonxx::Array>("data");
 		}
 		void stop()
 		{
@@ -56,6 +58,11 @@ namespace wezside
 			if (valfloat != -99999.0f) m.addIntArg(valfloat);
 			osc_sender.sendMessage(m);
 		}
+		/**
+		 * Set a track volume. 
+		 * @param track  Track Index - if groups are used within Ableton then the group will form part of the overall track index. 
+		 * @param volume Clamped float value for volume in range 0.0 to 1.0
+		 */
 		void setTrackVolume(int track, float volume)
 		{
 			ofxOscMessage m;
@@ -64,9 +71,14 @@ namespace wezside
 			m.addFloatArg(ofClamp(volume, 0.0f, 1.0f));
 			osc_sender.sendMessage(m);
 		}
+		/**
+		 * Sets the group volume. Only use if an ableton JSON mapping file is used.
+		 * @param index  Group Index
+		 * @param volume Float value for volume in range 0.0 to 1.0
+		 */
 		void setGroupVolume(int index, float volume)
 		{
-			jsonxx::Array groupArr = mapping.get<jsonxx::Array>("data");
+			
 			int groupIndex = 0;
 			for (int i = 0; i < index; ++i)
 			{
@@ -84,6 +96,10 @@ namespace wezside
 		int getGroupSize()
 		{
 			return mapping.get<jsonxx::Array>("data").size();
+		}
+		std::string getGroupName(int index)
+		{
+			return groupArr.get<jsonxx::Object>(index).get<jsonxx::String>("group");
 		}
 	};
 }

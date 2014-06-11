@@ -7,7 +7,7 @@ Requirements
 ------------
 
 * OpenFrameworks 0.8.x
-* ofxOsc
+* ofxOsc addon
 * Ableton Live 9 with Max for Live
 * LiveOSC
 * Need a virtual midi port set
@@ -18,3 +18,5 @@ Requirements
 	* add .h files to your compiler CFLAGS - see config.make
 	* Remove the jsonxx_test.cc file when using Make to compile as this will conflict with OF
 * ableton.json is only needed for use with setGroupXX()
+
+The map file ableton.json is currently a carbon copy of your Live Session set-up in Ableton. Your setup must make use of groups if you want to use this file. It is possible to not use groups by sioply not using this config mapping file. OSCController includes a liveOSCAPI() method for makinbg liveOSC API calls directly.

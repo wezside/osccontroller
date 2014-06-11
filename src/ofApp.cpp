@@ -10,14 +10,20 @@ void ofApp::setup()
 	oscremote.init();
 	oscremote.load(ofToDataPath("ableton.json"));
 	ofLog(OF_LOG_NOTICE, "%d", oscremote.getGroupSize());
+
+	// Visual representation for Ableton Live session set-up
+	for (int i = 0; i < oscremote.getGroupSize(); ++i)
+	{
+		wezside::AbletonGroup g(oscremote.getGroupName(i));
+		g.addTrack(wezside::AbletonTrack());
+		groups.push_back(g);
+	}
 }
 void ofApp::update()
 {
-
 }
 void ofApp::draw()
-{
-
+{	
 }
 void ofApp::keyPressed(int key){}
 void ofApp::keyReleased(int key)
