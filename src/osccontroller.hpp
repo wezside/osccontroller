@@ -1,5 +1,5 @@
-#ifndef __OSCREMOTE_HPP__
-#define __OSCREMOTE_HPP__
+#ifndef __OSCCONTROLLER_HPP__
+#define __OSCCONTROLLER_HPP__
 
 #include <fstream>
 #include "ofxOsc.h"
@@ -10,17 +10,17 @@
 
 namespace wezside
 {
-	class OSCRemote
+	class OSCController
 	{
 	private:
 		jsonxx::Object mapping;
 		ofxOscSender osc_sender;
 
 	public:
-		OSCRemote() {}
-		OSCRemote(const OSCRemote& s) {}
-		OSCRemote& operator=(OSCRemote& s){return s;}
-		~OSCRemote() {}
+		OSCController() {}
+		OSCController(const OSCController& s) {}
+		OSCController& operator=(OSCController& s){return s;}
+		~OSCController() {}
 
 		void init()
 		{
@@ -87,4 +87,4 @@ namespace wezside
 		}
 	};
 }
-#endif // __OSCREMOTE_HPP__
+#endif // __OSCCONTROLLER_HPP__

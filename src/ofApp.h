@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "oscremote.hpp"
+#include "osccontroller.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -22,5 +22,5 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 
-		wezside::OSCRemote oscremote;
+		wezside::OSCController oscremote;
 };
