@@ -177,30 +177,56 @@ namespace wezside
 		 * track index will be only used for visible tracks in Ableton. If all your groups are collapsed rather just use setTrackVolume.
 		 * @param index  Group Index
 		 * @param volume Float value for volume in range 0.0 to 1.0
-		void setGroupVolume(int index, float volume)
-		{
-			int groupIndex = 0;
-			for (int i = 0; i < index; ++i)
-			{
-				groupIndex += 1; // the group itself
-				groupIndex += trackArr.get<jsonxx::Object>(i).get<jsonxx::Array>("tracks").size(); // total tracks within group
-			}
-			ofxOscMessage m;
-			m.setAddress("/live/volume");
-			m.addIntArg(groupIndex);
-			m.addFloatArg(ofClamp(volume, 0.0f, 1.0f));
-			osc_sender.sendMessage(m);
-		}	
 		 */
+		void setGroupVolume(int index, float volume, bool group_tracks = false, bool exclude_group = false)
+		{
+			int lookup_index = 0;
+			for (unsigned int i = 0; i < trackArr.size(); ++i)
+			{
+				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
+				{
+					if (index == lookup_index)
+					{
+						lookup_index = i;
+						break;	
+					} 
+					lookup_index++;
+				}
+			}
+			if (!exclude_group)
+			{
+				ofxOscMessage m;
+				m.setAddress("/live/volume");
+				m.addIntArg(lookup_index);
+				m.addFloatArg(ofClamp(volume, 0.0f, 1.0f));
+				osc_sender.sendMessage(m);
+			}
+
+			if (!group_tracks) return;
+
+			// Set the volume of all the tracks associated with the group
+			for (unsigned int i = lookup_index+1; i < trackArr.size(); ++i)
+			{
+				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
+				{
+					break;
+				}
+				ofxOscMessage m;
+				m.setAddress("/live/volume");
+				m.addIntArg(i);
+				m.addFloatArg(ofClamp(volume, 0.0f, 1.0f));
+				osc_sender.sendMessage(m);
+			}
+		}	
 		/**
 		 * The number of AbletonTrackInfo instances currently active.
 		 * @return The number of AbletonTrackInfo instances currently active.
 		 */
-		int infoSize()
+		unsigned int infoSize()
 		{
 			return info.size();
 		}
-		int getGroupSize()
+		unsigned int getGroupSize()
 		{
 			return groups.size();
 		}

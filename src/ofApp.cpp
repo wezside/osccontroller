@@ -31,7 +31,7 @@ void ofApp::update()
 	if (groups.size() != oscremote.getGroupSize())
 	{
 		// Visual representation for Ableton Live session set-up
-		for (int i = 0; i < oscremote.getGroupSize(); ++i)
+		for (unsigned int i = 0; i < oscremote.getGroupSize(); ++i)
 		{
 			if (oscremote.getGroupName(i) == "") continue;
 			wezside::AbletonGroup g(oscremote.getGroupName(i));
@@ -43,13 +43,11 @@ void ofApp::update()
 			}
 			groups.push_back(g);
 
-			// Assumes ambient group is first and
-			// all groups are in collapsed view in Ableton
-			/*if (i > 0)
+			// Sets all group volume down 
+			if (i > 0)
 			{
-				// oscremote.listen();
-	 			oscremote.setTrackVolume(i, 0.0f);
-			}*/
+	 			oscremote.setGroupVolume(i, 0.0f, true, true);
+			}
 		}
 	}
 
