@@ -36,8 +36,8 @@ void ofApp::update()
 			if (oscremote.getGroupName(i) == "") continue;
 			wezside::AbletonGroup g(oscremote.getGroupName(i));
 			ofLog(OF_LOG_NOTICE, "AbletonGroup '%s' added", oscremote.getGroupName(i).c_str());
-			ofLog(OF_LOG_NOTICE, "Track count [%d] for group %d", oscremote.getTrackSize(i), i);
-			for (int k = 0; k < oscremote.getTrackSize(i); ++k)
+			ofLog(OF_LOG_NOTICE, "Track count [%d] for group %d", oscremote.getGroupTrackSize(i), i);
+			for (int k = 0; k < oscremote.getGroupTrackSize(i); ++k)
 			{
 				g.addTrack(wezside::AbletonTrack());
 			}
@@ -53,15 +53,17 @@ void ofApp::update()
 
 
 	// Visual representation for Ableton Live session set-up
-/*	if (ofGetFrameNum() % 90 == 0)
+	if (ofGetFrameNum() % 90 == 0)
 	{
 		for (int i = 0; i < oscremote.getGroupSize(); ++i)
 		{
-			oscremote.getTrackVolume(i);
-			groups.at(i).setBeat(oscremote.getBeat());
+			// Fetch the group volume
+			oscremote.getGroupVolume(i);
 		}
-	}*/
+	}
 	oscremote.listen();
+
+	// Pass track info objects to drawing objects
 }
 void ofApp::draw()
 {
@@ -80,7 +82,15 @@ void ofApp::draw()
 		else xoffset += 110; 
 		count ++;
 	}
-	oscremote.drawBeat();
+
+	// Draw the beat/tempo
+	if (oscremote.getBeat())
+	{
+		ofFill();
+		ofSetColor(255.0f);
+		ofCircle(ofGetWindowWidth() - 40, 0, 10);
+		oscremote.setBeat(false);
+	}
 }
 void ofApp::keyPressed(int key){}
 void ofApp::keyReleased(int key)

@@ -25,6 +25,24 @@ namespace wezside
 		std::vector<std::string> groups;
 		std::vector<wezside::AbletonTrackInfo> info;
 
+		int trackIndexForGroup(int index)
+		{
+			int lookup_index = 0;
+			for (unsigned int i = 0; i < trackArr.size(); ++i)
+			{
+				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
+				{
+					if (index == lookup_index)
+					{
+						lookup_index = i;
+						break;	
+					} 
+					lookup_index++;
+				}
+			}
+			return lookup_index;
+		}
+
 	public:
 		OSCController() {}
 		OSCController(const OSCController& s) {}
@@ -35,7 +53,6 @@ namespace wezside
 		{
 			osc_sender.setup(HOST, PORT_SEND);
 			osc_receiver.setup(PORT_RECEIVE);	
-			
 		}	
 		void load(std::string json)
 		{
@@ -49,6 +66,10 @@ namespace wezside
 			infile.close();
 			mapping.parse(content);
 			trackArr = mapping.get<jsonxx::Array>("data");
+		}
+		void save()
+		{
+			
 		}
 		virtual void start()
 		{
@@ -64,7 +85,6 @@ namespace wezside
 		}
 		virtual void listen()
 		{
-			// ofLog(OF_LOG_NOTICE, "%s", osc_receiver.hasWaitingMessages() ? "Has waiting" : "no messages");
 			while(osc_receiver.hasWaitingMessages())
 			{
 				ofxOscMessage m;
@@ -109,19 +129,13 @@ namespace wezside
 				}
 			}
 		}
-		void drawBeat()
-		{
-			if (beat)
-			{
-				ofFill();
-				ofSetColor(255.0f);
-				ofCircle(ofGetWindowWidth() - 40, 0, 10);
-				beat = false;
-			}
-		}
 		bool getBeat()
 		{
 			return beat;
+		}
+		void setBeat(bool val)
+		{
+			beat = val;
 		}
 		void liveOSCAPI(std::string address, int valint = -1, float valfloat = -99999.0f)
 		{
@@ -171,6 +185,11 @@ namespace wezside
 			m.addIntArg(track);
 			osc_sender.sendMessage(m);
 		}
+		void getGroupVolume(int group_index)
+		{
+			int track_index = trackIndexForGroup(group_index);
+			getTrackVolume(track_index);
+		}
 		/**
 		 * Sets the group volume. Only use if an ableton JSON mapping file is used. Also this will only work if the 
 		 * groups aren't collapsed in Ableton. If all the tracks are visible for all the groups then use this function. Reason is
@@ -180,19 +199,7 @@ namespace wezside
 		 */
 		void setGroupVolume(int index, float volume, bool group_tracks = false, bool exclude_group = false)
 		{
-			int lookup_index = 0;
-			for (unsigned int i = 0; i < trackArr.size(); ++i)
-			{
-				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
-				{
-					if (index == lookup_index)
-					{
-						lookup_index = i;
-						break;	
-					} 
-					lookup_index++;
-				}
-			}
+			int lookup_index = trackIndexForGroup(index);
 			if (!exclude_group)
 			{
 				ofxOscMessage m;
@@ -218,6 +225,7 @@ namespace wezside
 				osc_sender.sendMessage(m);
 			}
 		}	
+
 		/**
 		 * The number of AbletonTrackInfo instances currently active.
 		 * @return The number of AbletonTrackInfo instances currently active.
@@ -232,20 +240,8 @@ namespace wezside
 		}
 		std::string getGroupName(int index)
 		{
-			int lookup_index = 0;
-			for (unsigned int i = 0; i < trackArr.size(); ++i)
-			{
-				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
-				{
-					if (index == lookup_index)
-					{
-						lookup_index = i;
-						break;	
-					} 
-					lookup_index++;
-				}
-			}
-			return trackArr.size() == 0 ? "" : trackArr.get<jsonxx::Object>(lookup_index).get<jsonxx::String>("track_name");
+			int i = trackIndexForGroup(index);
+			return trackArr.size() == 0 ? "" : trackArr.get<jsonxx::Object>(i).get<jsonxx::String>("track_name");
 		}
 		/**
 		 * This function will add a group to the JSON object and associate an index with this
@@ -260,22 +256,10 @@ namespace wezside
 		 * @param  group_index The group zero index to calculate total tracks for
 		 * @return             Total number of tracks allocated to this group
 		 */
-		int getTrackSize(int group_index)
+		int getGroupTrackSize(int index)
 		{
 			int track_count = 0;
-			int lookup_index = 0;
-			for (unsigned int i = 0; i < trackArr.size(); ++i)
-			{
-				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
-				{
-					if (group_index == lookup_index)
-					{
-						lookup_index = i;
-						break;	
-					} 
-					lookup_index++;
-				}
-			}
+			int lookup_index = trackIndexForGroup(index);
 			for (unsigned int i = lookup_index+1; i < trackArr.size(); ++i)
 			{
 				if (trackArr.get<jsonxx::Object>(i).has<jsonxx::Boolean>("group"))
