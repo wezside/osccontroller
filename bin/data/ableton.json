@@ -1,15 +1,12 @@
 {"data": 
 [
 	{
-		"group": "Ambient",
-		"tracks": [0]
+		"track_name": "Ambient"
 	},
 	{
-		"group": "Direct Speaker 1",
-		"tracks": [0, 1, 2 , 3]
+		"track_name": "Speaker 1"
 	},
 	{
-		"group": "Direct Speaker 2",
-		"tracks": [0, 1, 2 , 3]
-	}	
+		"track_name": "Speaker 2"
+	}
 ]}

@@ -10,8 +10,6 @@ Requirements
 * ofxOsc addon
 * Ableton Live 9 with Max for Live
 * LiveOSC
-* Need a virtual midi port set
-	* loopMidi for Windows 
 * Port 9000 open on firewall
 * Setup Midi device in Ableton using virtual Midi port + Remote switch
 * JSONXX library 
