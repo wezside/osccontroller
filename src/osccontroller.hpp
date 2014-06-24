@@ -121,6 +121,7 @@ namespace wezside
 				{
 					unsigned int track = m.getArgAsInt32(0);
 					float track_volume = m.getArgAsFloat(1);
+					ofLog(OF_LOG_NOTICE, "Track volume %d %f", track, track_volume);
 					if (track < info.size())
 					{
 						info.at(track).setVolume(track_volume);
@@ -128,6 +129,10 @@ namespace wezside
 					else ofLog(OF_LOG_WARNING, "There was a problem storing the track #%d volume value of %f", track, track_volume);
 				}
 			}
+		}
+		void getInfo(std::vector<wezside::AbletonTrackInfo>& track_info)
+		{
+			track_info = info;
 		}
 		bool getBeat()
 		{
@@ -194,8 +199,10 @@ namespace wezside
 		 * Sets the group volume. Only use if an ableton JSON mapping file is used. Also this will only work if the 
 		 * groups aren't collapsed in Ableton. If all the tracks are visible for all the groups then use this function. Reason is
 		 * track index will be only used for visible tracks in Ableton. If all your groups are collapsed rather just use setTrackVolume.
-		 * @param index  Group Index
+		 * @param index Group Index
 		 * @param volume Float value for volume in range 0.0 to 1.0
+		 * @param group_tracks If true will set all the tracks within a group's volume
+		 * @param exclude_group If true excludes the group track itself from volume adjustment
 		 */
 		void setGroupVolume(int index, float volume, bool group_tracks = false, bool exclude_group = false)
 		{
@@ -225,7 +232,6 @@ namespace wezside
 				osc_sender.sendMessage(m);
 			}
 		}	
-
 		/**
 		 * The number of AbletonTrackInfo instances currently active.
 		 * @return The number of AbletonTrackInfo instances currently active.
@@ -233,6 +239,23 @@ namespace wezside
 		unsigned int infoSize()
 		{
 			return info.size();
+		}
+		wezside::AbletonTrackInfo* getInfoForGroup(int group_index)
+		{
+			int lookup_index = trackIndexForGroup(group_index);
+			if ((unsigned)lookup_index < info.size() && info.size() > 0)
+			{
+				return &info.at(lookup_index);
+			} 
+			return NULL;
+		}
+		wezside::AbletonTrackInfo* getInfoForTrack(int track_index)
+		{
+			if ((unsigned)track_index < info.size())
+			{
+				return &info.at(track_index);
+			}
+			return NULL;
 		}
 		unsigned int getGroupSize()
 		{

@@ -24,6 +24,7 @@ namespace wezside
 			volume = v;			
 			ofLog(OF_LOG_NOTICE, "Track %d added", index);	
 		}
+
 		~AbletonTrackInfo() {}
 
 		int getIndex() {return index;}

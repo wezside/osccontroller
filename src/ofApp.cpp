@@ -35,35 +35,41 @@ void ofApp::update()
 		{
 			if (oscremote.getGroupName(i) == "") continue;
 			wezside::AbletonGroup g(oscremote.getGroupName(i));
-			ofLog(OF_LOG_NOTICE, "AbletonGroup '%s' added", oscremote.getGroupName(i).c_str());
-			ofLog(OF_LOG_NOTICE, "Track count [%d] for group %d", oscremote.getGroupTrackSize(i), i);
 			for (int k = 0; k < oscremote.getGroupTrackSize(i); ++k)
 			{
-				g.addTrack(wezside::AbletonTrack());
+				g.addTrack(k, wezside::AbletonTrack(), oscremote.getGroupTrackSize(i));
 			}
 			groups.push_back(g);
 
 			// Sets all group volume down 
-			if (i > 0)
+			if (i  == 1)
 			{
-	 			oscremote.setGroupVolume(i, 0.0f, true, true);
+	 			oscremote.setGroupVolume(i, 0.0f);
 			}
 		}
 	}
 
-
-	// Visual representation for Ableton Live session set-up
-	if (ofGetFrameNum() % 90 == 0)
+	// Poll the group track volume 
+	if (ofGetFrameNum() % 90 == 0 && groups.size() == oscremote.getGroupSize())
 	{
-		for (int i = 0; i < oscremote.getGroupSize(); ++i)
+		for (unsigned int i = 0; i < oscremote.getGroupSize(); ++i)
 		{
 			// Fetch the group volume
 			oscremote.getGroupVolume(i);
+
+			// Fetch and set the group info object
+			groups.at(i).setGroupInfo(oscremote.getInfoForGroup(i));
+			
+			// Fetch and set the track info objects for each group
+			for (int k = 0; k < oscremote.getGroupTrackSize(i); ++k)
+			{
+				oscremote.getTrackVolume(i+1+k);
+				groups.at(i).addTrackInfo(k, oscremote.getInfoForTrack(i+1+k));
+			}
+			groups.at(i).update();
 		}
 	}
 	oscremote.listen();
-
-	// Pass track info objects to drawing objects
 }
 void ofApp::draw()
 {

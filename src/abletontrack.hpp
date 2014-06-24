@@ -6,6 +6,7 @@ namespace wezside
 	class AbletonTrack
 	{
 	private:
+		wezside::AbletonTrackInfo* info;
 
 	public:
 		AbletonTrack() {}
@@ -17,16 +18,17 @@ namespace wezside
 			int w = 30;
 			int h = 30;
 			ofFill();
-			ofSetColor(255.0, 122.0);
+			float v = info->getVolume();
+			if (v == 0.0f)
+			{
+				ofSetColor(33.0, v * 255.0f);
+			}
+			else ofSetColor(255.0f, 133.0f, 0.0f, v * 255.0f);
 			ofRect(xoffset, yoffset, w, h);
 		}
-		void drawBeat(bool beat = true, float volume = 0.0f)
+		void setInfo(wezside::AbletonTrackInfo* track_info)
 		{
-			/*if (beat)
-			{
-				h = 
-			}
-			ofRect(xoffset, yoffset, w, h);	*/
+			info = track_info;
 		}
 	};
 }
