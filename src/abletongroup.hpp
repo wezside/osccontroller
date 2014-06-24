@@ -78,6 +78,7 @@ namespace wezside
 		}
 		void addTrackInfo(int index, wezside::AbletonTrackInfo* track_info)
 		{
+			// ofLog(OF_LOG_NOTICE, "Track info add %f [%d]", track_info->getVolume(), track_info->getIndex());
 			if (track_info != NULL && index < info.size()) info.at(index) = track_info;
 			else info.push_back(track_info);
 		}

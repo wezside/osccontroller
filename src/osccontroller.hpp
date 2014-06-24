@@ -121,7 +121,7 @@ namespace wezside
 				{
 					unsigned int track = m.getArgAsInt32(0);
 					float track_volume = m.getArgAsFloat(1);
-					ofLog(OF_LOG_NOTICE, "Track volume %d %f", track, track_volume);
+					ofLog(OF_LOG_NOTICE, "Track Volume %d [%f]", track, track_volume);
 					if (track < info.size())
 					{
 						info.at(track).setVolume(track_volume);

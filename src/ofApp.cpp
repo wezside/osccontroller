@@ -40,11 +40,12 @@ void ofApp::update()
 				g.addTrack(k, wezside::AbletonTrack(), oscremote.getGroupTrackSize(i));
 			}
 			groups.push_back(g);
+			groups.at(i).setGroupInfo(oscremote.getInfoForGroup(i));
 
 			// Sets all group volume down 
-			if (i  == 1)
+			if (i == 1)
 			{
-	 			oscremote.setGroupVolume(i, 0.0f);
+	 			oscremote.setGroupVolume(i, 0.5f, true, true);
 			}
 		}
 	}
@@ -52,10 +53,11 @@ void ofApp::update()
 	// Poll the group track volume 
 	if (ofGetFrameNum() % 90 == 0 && groups.size() == oscremote.getGroupSize())
 	{
+		int group_start_index = 0;
 		for (unsigned int i = 0; i < oscremote.getGroupSize(); ++i)
 		{
 			// Fetch the group volume
-			oscremote.getGroupVolume(i);
+			// oscremote.getGroupVolume(i);
 
 			// Fetch and set the group info object
 			groups.at(i).setGroupInfo(oscremote.getInfoForGroup(i));
@@ -64,8 +66,10 @@ void ofApp::update()
 			for (int k = 0; k < oscremote.getGroupTrackSize(i); ++k)
 			{
 				oscremote.getTrackVolume(i+1+k);
-				groups.at(i).addTrackInfo(k, oscremote.getInfoForTrack(i+1+k));
+				ofLog(OF_LOG_NOTICE, "%s %d", "Updating track info for ", group_start_index+1+k);
+				groups.at(i).addTrackInfo(k, oscremote.getInfoForTrack(group_start_index+1+k));
 			}
+			group_start_index += oscremote.getGroupTrackSize(i) + 1;
 			groups.at(i).update();
 		}
 	}
