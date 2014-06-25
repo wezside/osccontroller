@@ -28,6 +28,7 @@ void ofApp::setup()
 }
 void ofApp::update()
 {
+	// Create groups once
 	if (groups.size() != oscremote.getGroupSize())
 	{
 		// Visual representation for Ableton Live session set-up
@@ -57,7 +58,7 @@ void ofApp::update()
 		for (unsigned int i = 0; i < oscremote.getGroupSize(); ++i)
 		{
 			// Fetch the group volume
-			// oscremote.getGroupVolume(i);
+			oscremote.getGroupVolume(i);
 
 			// Fetch and set the group info object
 			groups.at(i).setGroupInfo(oscremote.getInfoForGroup(i));
@@ -66,7 +67,6 @@ void ofApp::update()
 			for (int k = 0; k < oscremote.getGroupTrackSize(i); ++k)
 			{
 				oscremote.getTrackVolume(i+1+k);
-				ofLog(OF_LOG_NOTICE, "%s %d", "Updating track info for ", group_start_index+1+k);
 				groups.at(i).addTrackInfo(k, oscremote.getInfoForTrack(group_start_index+1+k));
 			}
 			group_start_index += oscremote.getGroupTrackSize(i) + 1;
